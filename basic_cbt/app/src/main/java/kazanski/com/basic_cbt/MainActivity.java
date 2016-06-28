@@ -60,4 +60,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             startActivity(intent);
         }
     }
+
+    public void AddAnalysis(View view) {
+        Intent intent = new Intent(this, AddAnalysis.class);
+        startActivity(intent);
+    }
 }

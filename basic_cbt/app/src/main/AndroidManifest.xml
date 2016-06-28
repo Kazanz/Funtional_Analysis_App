@@ -3,6 +3,7 @@
     package="kazanski.com.basic_cbt">
 
     <application
+        android:name="com.orm.SugarApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,7 +20,17 @@
         <activity android:name=".BehaviorExplain" />
         <activity android:name=".ConsequencesExplain" />
         <activity android:name=".HowToActivity" />
-        <activity android:name=".Example"></activity>
+        <activity android:name=".Example" />
+
+        <meta-data
+            android:name="DATABASE"
+            android:value="trigger_therapist.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="2" />
+
+        <activity android:name=".AddAnalysis" />
+        <activity android:name=".ViewPrevious"></activity>
     </application>
 
 </manifest>
