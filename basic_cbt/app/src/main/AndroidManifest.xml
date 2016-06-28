@@ -30,7 +30,8 @@
             android:value="2" />
 
         <activity android:name=".AddAnalysis" />
-        <activity android:name=".ViewPrevious"></activity>
+        <activity android:name=".ViewPrevious" />
+        <activity android:name=".AboutActivity"></activity>
     </application>
 
 </manifest>

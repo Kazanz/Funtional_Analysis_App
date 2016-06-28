@@ -41,6 +41,7 @@ public class AddAnalysis extends AppCompatActivity {
         } else {
             Analysis analysis = new Analysis(triggerText, feelingText, behaviorText, positiveText,
                     negativeText);
+            analysis.save();
             Toast.makeText(AddAnalysis.this, "Saved! Great job! Keep it up!",
                     Toast.LENGTH_LONG).show();
             finish();

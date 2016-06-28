@@ -2,6 +2,8 @@ package kazanski.com.basic_cbt;
 
 import com.orm.SugarRecord;
 
+import java.util.List;
+
 /**
  * Created by kazanz on 6/27/16.
  */
