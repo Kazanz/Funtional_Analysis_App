@@ -1,10 +1,14 @@
 package kazanski.com.basic_cbt;
 
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -37,6 +41,7 @@ public class ViewPrevious extends AppCompatActivity {
         positiveText = (TextView) findViewById(R.id.positiveText);
         negativeText = (TextView) findViewById(R.id.negativeText);
 
+        logData();
 
         Iterator<Analysis> analysisIterator = Analysis.findAll(Analysis.class);
         while(analysisIterator.hasNext()) {
@@ -83,5 +88,20 @@ public class ViewPrevious extends AppCompatActivity {
         } else {
             nextButton.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void logData() {
+        JSONObject data = new JSONObject();
+        String android_id = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        try {
+            data.put("id", android_id);
+            data.put("type", "control");
+            data.put("method", "view activity");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String url = "http://10.0.3.2:3000/add";
+        new JSONPostRequest().execute(url, data.toString());
     }
 }
