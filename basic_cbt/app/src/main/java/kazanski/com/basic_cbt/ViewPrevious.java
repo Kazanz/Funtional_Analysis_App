@@ -10,7 +10,9 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -94,10 +96,14 @@ public class ViewPrevious extends AppCompatActivity {
         JSONObject data = new JSONObject();
         String android_id = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.ANDROID_ID);
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateformat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss aa");
+        String datetime = dateformat.format(c.getTime());
         try {
             data.put("id", android_id);
             data.put("type", "control");
             data.put("method", "view activity");
+            data.put("date", datetime);
         } catch (JSONException e) {
             e.printStackTrace();
         }

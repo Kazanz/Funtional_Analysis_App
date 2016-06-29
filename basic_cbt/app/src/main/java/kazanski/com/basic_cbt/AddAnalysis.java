@@ -1,6 +1,7 @@
 package kazanski.com.basic_cbt;
 
 import android.content.Context;
+import android.content.Intent;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +11,9 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import static java.security.AccessController.getContext;
 
@@ -52,6 +56,9 @@ public class AddAnalysis extends AppCompatActivity {
             logData();
             Toast.makeText(AddAnalysis.this, "Saved! Great job! Keep it up!",
                     Toast.LENGTH_LONG).show();
+            Intent intent = new Intent();
+            intent.putExtra("success","true");
+            setResult(RESULT_OK, intent);
             finish();
         }
     }
@@ -60,10 +67,14 @@ public class AddAnalysis extends AppCompatActivity {
         JSONObject data = new JSONObject();
         String android_id = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.ANDROID_ID);
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateformat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss aa");
+        String datetime = dateformat.format(c.getTime());
         try {
             data.put("id", android_id);
             data.put("type", "control");
             data.put("method", "add activity");
+            data.put("date", datetime);
             data.put("trigger_len", String.valueOf(trigger.getText().length()));
             data.put("feeling_len", String.valueOf(feeling.getText().length()));
             data.put("behavior_len", String.valueOf(behavior.getText().length()));
