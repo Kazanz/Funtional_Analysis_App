@@ -85,10 +85,14 @@ public class ViewPrevious extends AppCompatActivity {
         } else {
             prevButton.setVisibility(View.VISIBLE);
         }
-        if (current_index == length -1) {
+        if (current_index == length - 1) {
             nextButton.setVisibility(View.INVISIBLE);
         } else {
             nextButton.setVisibility(View.VISIBLE);
+        }
+        if (length == 0) {
+            nextButton.setVisibility(View.INVISIBLE);
+            prevButton.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -101,13 +105,13 @@ public class ViewPrevious extends AppCompatActivity {
         String datetime = dateformat.format(c.getTime());
         try {
             data.put("id", android_id);
-            data.put("type", "control");
             data.put("method", "view activity");
             data.put("date", datetime);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = "http://10.0.3.2:3000/add";
+        // String url = "http://10.0.3.2:3000/add";
+        String url = "http://68.233.232.240:3000/add";
         new JSONPostRequest().execute(url, data.toString());
     }
 }

@@ -1,10 +1,9 @@
 package kazanski.com.basic_cbt;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,13 +13,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -33,12 +34,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public ImageView petImage;
     public TextView petMsg;
     public TextView petIQ;
+    public TextView petExplain;
     public int petIQValue;
 
     public static final String MY_PREFERENCES = "TriggerTherapist";
     public static final String PREFERENCE = "PetIQ";
     public SharedPreferences myPreferences;
 
+    // Identifies whether the app should be a control or test app.
+    public boolean control = false;
+    public boolean datalogged = false;
 
 
     @Override
@@ -46,16 +51,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myPreferences = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
-        petIQValue = myPreferences.getInt(PREFERENCE, 20);
+        logData();
 
+        myPreferences = getSharedPreferences(MY_PREFERENCES, Context.MODE_PRIVATE);
+        petIQValue = myPreferences.getInt(PREFERENCE, 2);
+
+        petExplain = (TextView) findViewById(R.id.petExplain);
         petImage = (ImageView) findViewById(R.id.pet);
         petMsg = (TextView) findViewById(R.id.petMsg);
         petIQ = (TextView) findViewById(R.id.petIQ);
-        petIQ.setText("DOG IQ: " + String.valueOf(petIQValue));
+        petIQ.setText("PET IQ: " + String.valueOf(petIQValue));
         updatePet(true, false);
 
-        // TODO: Everythime main activity started record it.
+        if (control) {
+            petExplain.setVisibility(View.GONE);
+            petImage.setVisibility(View.GONE);
+            petMsg.setVisibility(View.GONE);
+            petIQ.setVisibility(View.GONE);
+        }
 
         modulesList = (ListView) findViewById(R.id.modulesList);
         moduleData.add("What is a Trigger?");
@@ -190,17 +203,43 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void updatePetIQ(int min, int max) throws InterruptedException {
-        Random rand = new Random();
-        int randomNum = min + rand.nextInt((max - min) + 1);
-        if (randomNum != 0) {
-            for (int i = 0; i <= randomNum; i++) {
-                petIQValue += 1;
-                petIQ.setText("DOG IQ: " + String.valueOf(petIQValue));
+        if (!control) {
+            Random rand = new Random();
+            int randomNum = min + rand.nextInt((max - min) + 1);
+            int initial = petIQValue;
+            if (randomNum != 0) {
+                for (int i = 0; i <= randomNum; i++) {
+                    petIQValue += 1;
+                    petIQ.setText("PET IQ: " + String.valueOf(petIQValue));
+                }
+                String change = String.valueOf(petIQValue - initial);
+                Toast.makeText(MainActivity.this, "Pet IQ increased by: " + change, Toast.LENGTH_LONG).show();
+                SharedPreferences.Editor editor = myPreferences.edit();
+                editor.putInt(PREFERENCE, petIQValue);
+                editor.commit();
             }
-            SharedPreferences.Editor editor = myPreferences.edit();
-            editor.putInt(PREFERENCE, petIQValue);
-            editor.commit();
         }
+    }
+
+    public void logData() {
+        JSONObject data = new JSONObject();
+        String android_id = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat dateformat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss aa");
+        String datetime = dateformat.format(c.getTime());
+        try {
+            data.put("id", android_id);
+            data.put("is_control", String.valueOf(control));
+            data.put("method", "app load");
+            data.put("date", datetime);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // String url = "http://10.0.3.2:3000/add";
+        String url = "http://68.233.232.240:3000/add";
+        new JSONPostRequest().execute(url, data.toString());
+        datalogged = true;
     }
 }
 

@@ -1,6 +1,5 @@
 package kazanski.com.basic_cbt;
 
-import android.content.Context;
 import android.content.Intent;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,6 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import static java.security.AccessController.getContext;
 
 public class AddAnalysis extends AppCompatActivity {
 
@@ -54,7 +52,7 @@ public class AddAnalysis extends AppCompatActivity {
                     negativeText);
             analysis.save();
             logData();
-            Toast.makeText(AddAnalysis.this, "Saved! Great job! Keep it up!",
+            Toast.makeText(AddAnalysis.this, "Analysis Saved",
                     Toast.LENGTH_LONG).show();
             Intent intent = new Intent();
             intent.putExtra("success","true");
@@ -72,7 +70,6 @@ public class AddAnalysis extends AppCompatActivity {
         String datetime = dateformat.format(c.getTime());
         try {
             data.put("id", android_id);
-            data.put("type", "control");
             data.put("method", "add activity");
             data.put("date", datetime);
             data.put("trigger_len", String.valueOf(trigger.getText().length()));
@@ -83,7 +80,8 @@ public class AddAnalysis extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        String url = "http://10.0.3.2:3000/add";
+        // String url = "http://10.0.3.2:3000/add";
+        String url = "http://68.233.232.240:3000/add";
         new JSONPostRequest().execute(url, data.toString());
     }
 }
